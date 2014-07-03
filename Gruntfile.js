@@ -8,6 +8,16 @@
 
 'use strict';
 
+var manifestOptions = {
+  manifest: 'runtastic',
+  manifestSize: 10
+};
+
+var redisConfigDev = {
+  host: 'localhost',
+  port: 6379
+};
+
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -29,18 +39,25 @@ module.exports = function(grunt) {
     },
 
     // Configuration to be run (and then tested).
-    rt_deployinator: {
-      default_options: {
+    deploy: {
+      options: manifestOptions,
+
+      dev: {
         options: {
-          storeConfig: {
-            host: 'localhost',
-            port: 6379
-          },
-          manifest: 'runtastic',
-          manifestSize: 10
+          storeConfig: redisConfigDev
         },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+        files: [
+          { src: 'test/fixtures/index.html' }
+        ]
+      }
+    },
+
+    listDeploys: {
+      options: manifestOptions,
+
+      dev: {
+        options: {
+          storeConfig: redisConfigDev
         }
       }
     },
@@ -60,11 +77,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
-  // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'rt_deployinator', 'nodeunit']);
-
   // By default, lint and run all tests.
-  grunt.registerTask('default', ['rt_deployinator']);
-
+  grunt.registerTask('default', ['deploy:dev']);
 };
