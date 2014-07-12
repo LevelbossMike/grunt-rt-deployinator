@@ -9,13 +9,14 @@
 'use strict';
 
 var Deploy = require('deployinator');
+var RSVP = require('rsvp');
 
 module.exports = function(grunt) {
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
-  grunt.registerMultiTask('rt_deployinator', 'Grunt task for lightning fast deployments of JavaScript Apps.', function() {
+  grunt.registerMultiTask('upload', 'Grunt task for lightning fast deployments of JavaScript Apps.', function() {
     var done = this.async();
 
     var options = this.options({});
@@ -23,43 +24,86 @@ module.exports = function(grunt) {
     var deploy = new Deploy(options);
 
     var success = function(value) {
-      console.log(value);
-      grunt.log.ok('Deploy successful!');
+      grunt.log.ok('Deploy: ' + deploy.key +  ' successful!');
+      done();
+    };
+
+    var error = function(error) {
+      grunt.log.error('Error! Deploy not successful! Reason: '+ error);
+    };
+
+    var fileExists = function(filepath) {
+      if (!grunt.file.exists(filepath)) {
+        grunt.log.warn('Source file "' + filepath + '" not found.');
+        return false;
+      } else {
+        return true;
+      }
+    };
+
+    var deployFileContent = function(filepath) {
+      deploy.upload(grunt.file.read(filepath))
+        .then(success, error);
+    };
+
+    var deployFile = function(file) {
+      file.src.filter(fileExists).forEach(deployFileContent);
+    };
+
+    this.files.forEach(deployFile);
+  });
+
+  grunt.registerMultiTask('listUploads', 'Grunt task to list all <manifestSize> deploys', function() {
+    var done = this.async();
+
+    var options = this.options({});
+
+    var deploy = new Deploy(options);
+
+    var promises = {
+      uploads: deploy.listUploads(),
+      current: deploy.getCurrent()
+    };
+
+    RSVP.hash(promises).then(function(results) {
+      grunt.log.ok('Last ' + deploy.manifestSize + ' deploys:\n');
+      grunt.log.ok('');
+      grunt.log.ok('|    Git-SHA');
+      grunt.log.ok('|');
+      results.uploads.forEach(function(key) {
+        var prefix = (key === results.current) ? '| => ' : '|    ';
+        grunt.log.ok(prefix + key + '\n');
+      });
+      grunt.log.ok('');
+      grunt.log.ok('# => - current');
+      done();
+    });
+  });
+
+  grunt.registerMultiTask('deploy', 'Deploy this shit', function(key) {
+    var done = this.async();
+
+    var options = this.options({});
+
+    var deploy = new Deploy(options);
+
+    var success = function() {
+      grunt.log.ok('Deploy successfull!');
+      grunt.log.ok('Run `grunt listUploads` to see which revision is current');
       done();
     };
 
     var error = function() {
-      grunt.log.error('Error: Deploy not successful!');
+      grunt.log.error('Deploy failed!');
+      grunt.log.error('You have to specify a valid manifest...');
+      grunt.log.error('Please run `grunt listUploads` to see valid options');
+      done();
     };
 
-    deploy.deploy('deployed with options')
+    deploy.setCurrent(key)
       .then(success, error);
-
-    // Iterate over all specified file groups.
-    // this.files.forEach(function(f) {
-      // // Concat specified files.
-      // var src = f.src.filter(function(filepath) {
-        // // Warn on and remove invalid source files (if nonull was set).
-        // if (!grunt.file.exists(filepath)) {
-          // grunt.log.warn('Source file "' + filepath + '" not found.');
-          // return false;
-        // } else {
-          // return true;
-        // }
-      // }).map(function(filepath) {
-        // // Read file source.
-        // return grunt.file.read(filepath);
-      // }).join(grunt.util.normalizelf(options.separator));
-
-      // // Handle options.
-      // src += options.punctuation;
-
-      // // Write the destination file.
-      // grunt.file.write(f.dest, src);
-
-      // // Print a success message.
-      // grunt.log.writeln('File "' + f.dest + '" created.');
-    // });
   });
+
+  grunt.loadNpmTasks('grunt-git-describe');
 
 };
