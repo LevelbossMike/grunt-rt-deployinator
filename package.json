@@ -39,6 +39,6 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "deployinator": "^0.1.1"
+    "deployinator": "^0.2.0"
   }
 }
