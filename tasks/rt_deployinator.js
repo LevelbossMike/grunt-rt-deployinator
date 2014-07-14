@@ -23,13 +23,15 @@ module.exports = function(grunt) {
 
     var deploy = new Deploy(options);
 
-    var success = function(value) {
-      grunt.log.ok('Deploy: ' + deploy.key +  ' successful!');
+    var success = function() {
+      grunt.log.ok('Upload: ' + deploy.key +  ' successful!');
       done();
     };
 
-    var error = function(error) {
-      grunt.log.error('Error! Deploy not successful! Reason: '+ error);
+    var error = function() {
+      grunt.log.error('Error! Upload not successful!');
+      grunt.log.error('Did you try to upload a already uploaded SHA?');
+      grunt.log.error('Please run `grunt listUploads` to investigate.');
       done();
     };
 
