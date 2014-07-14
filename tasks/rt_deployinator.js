@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 
     var error = function(error) {
       grunt.log.error('Error! Deploy not successful! Reason: '+ error);
+      done();
     };
 
     var fileExists = function(filepath) {
