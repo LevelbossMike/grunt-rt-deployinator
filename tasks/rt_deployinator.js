@@ -83,12 +83,14 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerMultiTask('deploy', 'Deploy this shit', function(key) {
+  grunt.registerMultiTask('deploy', 'Deploy this shit', function() {
     var done = this.async();
 
     var options = this.options({});
 
     var deploy = new Deploy(options);
+
+    var key = grunt.option('key');
 
     var success = function() {
       grunt.log.ok('Deploy successfull!');
