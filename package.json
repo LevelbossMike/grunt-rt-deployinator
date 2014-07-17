@@ -39,7 +39,7 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "deployinator": "^0.4.1",
+    "deployinator": "^0.5.0",
     "rsvp": "^3.0.9"
   }
 }
