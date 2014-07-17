@@ -106,7 +106,4 @@ module.exports = function(grunt) {
     deploy.setCurrent(key)
       .then(success, error);
   });
-
-  grunt.loadNpmTasks('grunt-git-describe');
-
 };
