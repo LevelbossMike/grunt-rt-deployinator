@@ -2,22 +2,22 @@
   "name": "grunt-rt-deployinator",
   "description": "Grunt task for lightning fast deployments of JavaScript Apps.",
   "version": "0.1.0",
-  "homepage": "https://github.com/michael/grunt-rt-deployinator",
+  "homepage": "https://github.com/LevelbossMike/grunt-rt-deployinator",
   "author": {
     "name": "Michael Klein",
     "email": "michael@firstiwaslike.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/michael/grunt-rt-deployinator.git"
+    "url": "git://github.com/LevelbossMike/grunt-rt-deployinator.git"
   },
   "bugs": {
-    "url": "https://github.com/michael/grunt-rt-deployinator/issues"
+    "url": "https://github.com/LevelbossMike/grunt-rt-deployinator/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/michael/grunt-rt-deployinator/blob/master/LICENSE-MIT"
+      "url": "https://github.com/LevelbossMike/grunt-rt-deployinator/blob/master/LICENSE-MIT"
     }
   ],
   "engines": {
